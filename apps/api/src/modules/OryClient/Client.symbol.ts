@@ -1,0 +1,1 @@
+export const ORY_CLIENT = "ORY_CLIENT";

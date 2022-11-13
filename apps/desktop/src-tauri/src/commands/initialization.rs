@@ -1,7 +1,7 @@
 use tauri::{State, Window};
 
 use ts_rs::TS;
-use crate::states::config::{StaticConfigState};
+use crate::{states::{config::{StaticConfigState}}};
 use webbrowser::open;
 
 //
@@ -30,7 +30,7 @@ pub fn fetch_config(config: State<StaticConfigState>, window: Window) -> FetchCo
 // move to ../../libs/types crate
 #[derive(serde::Serialize, TS)]
 #[serde(rename_all = "camelCase")]
-#[ts(export, export_to="../../../libs/types/typescript/backend_to_frontend/config/FetchConfigResponse.ts")]
+#[ts(export, export_to="../../../libs/types/generated/backend_to_frontend/config/FetchConfigResponse.ts")]
 pub struct FetchConfigResponse {
   launcher_session: Option<String>,
   logotype: String,
@@ -41,13 +41,15 @@ pub struct FetchConfigResponse {
 //
 #[tauri::command]
 pub fn start_authorization(config: State<StaticConfigState>, auth_type: AuthorizationType, email: Option<String>) -> String {
+  let redirect_url: String = format!("http://localhost:{}/auth/token", config.server_port.clone());
+
   let auth_url: String;
   match auth_type {
     AuthorizationType::EMAIL => {
-      auth_url = format!("{}?type={}&email={}", config.auth_url.clone(), auth_type.to_string(), email.unwrap());
+      auth_url = format!("{}?redirectUrl={}&type={}&email={}", config.auth_url.clone(), redirect_url.clone(), auth_type.to_string(), email.unwrap());
     }
     _ => {
-      auth_url = format!("{}?type={}", config.auth_url.clone(), auth_type.to_string());
+      auth_url = format!("{}?redirectUrl={}&type={}", config.auth_url.clone(), redirect_url.clone(), auth_type.to_string());
     }
   }
 
@@ -61,7 +63,7 @@ pub fn start_authorization(config: State<StaticConfigState>, auth_type: Authoriz
 // todo
 // move to ../../libs/types crate
 #[derive(serde::Deserialize, TS)]
-#[ts(export, export_to="../../../libs/types/typescript/backend_to_frontend/auth/AuthorizationType.ts")]
+#[ts(export, export_to="../../../libs/types/generated/backend_to_frontend/auth/AuthorizationType.ts")]
 pub enum AuthorizationType {
   EMAIL,
   DISCORD,

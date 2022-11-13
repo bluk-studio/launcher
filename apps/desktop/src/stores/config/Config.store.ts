@@ -39,10 +39,6 @@ function _initialize() {
 
         return object;
       });
-
-      // Uodating Profile store with launcherSession
-      // value (if set)
-      if (response.launcherSession) ProfileStore.setLauncherSession(response.launcherSession);
     },
   };
 };

@@ -3,9 +3,12 @@
   import { onMount } from 'svelte';
   import { CurrentRouteStore } from 'src/stores';
   import { invoke } from '@tauri-apps/api/tauri';
+  import { listen } from '@tauri-apps/api/event';
+  import type { Event } from '@tauri-apps/api/event';
+  import type { TokenReceivedEventPayload } from '$types/backend_to_frontend/events/TokenReceivedEventPayload';
+  import { navigate } from 'svelte-routing';
 
   // Importing icons
-  import ExternalLink from '~icons/ri/external-link-line';
   import RiDiscordFill from '~icons/ri/discord-fill';
   import RiGoogleFill from '~icons/ri/google-fill';
   import RiCloseFill from '~icons/ri/close-fill'
@@ -27,10 +30,23 @@
   onMount(() => {
     // CurrentStore setup
     CurrentRouteStore.hideSidebar();
+    CurrentRouteStore.setApplicationRoute(false);
   });
 
   async function startAuthorization(type: AuthorizationType) {
     isLoading = true;
+
+    // Listening to application's "token_received" event
+    const unlisten = await listen('token_received', async (event: Event<TokenReceivedEventPayload>) => {
+      // Asking application to authorize our user
+      await invoke("update_profile", { profileId: event.payload.profileId });
+
+      // Redirecting
+      navigate("/library/game/testId");
+
+      // Unlistening
+      unlisten();
+    });
 
     // Sending request to backend
     authLink = await invoke('start_authorization', { authType: type, email });
@@ -81,7 +97,7 @@
           <!-- Login button -->
           <button on:click={() => {
             startAuthorization(AuthorizationType.EMAIL);
-          }} class="w-full px-3 py-1.5 mt-4 bg-light-foreground rounded-lg text-white text-opacity-60 flex items-center justify-center disabled:cursor-not-allowed" disabled={email == null}>
+          }} class="w-full px-3 py-1.5 mt-4 bg-light-foreground transition ease-it-out duration-200 hover:bg-background rounded-lg text-white text-opacity-60 flex items-center justify-center disabled:cursor-not-allowed" disabled={email == null}>
             <!-- Loading screen -->
             { #if isLoading }
               <Circle color="#fff" size={20} />
@@ -105,7 +121,7 @@
           { #each [{ type: AuthorizationType.DISCORD, text: "Discord", icon: RiDiscordFill }, { type: AuthorizationType.GOOGLE, text: "Google", icon: RiGoogleFill }] as method }
             <button on:click={() => {
               startAuthorization(method.type);
-            }} class="w-max mx-1.5 px-4 py-1.5 flex items-center rounded-full bg-light-foreground justify-center opacity-80">
+            }} class="w-max mx-1.5 px-4 py-1.5 flex items-center rounded-full bg-light-foreground transition ease-it-out duration-200 hover:bg-background justify-center opacity-80">
               <svelte:component this={method.icon} class="text-white w-4 h-4 mr-1.5" />
               
               <p class="text-white text-opacity-80 text-xs">{ method.text }</p>

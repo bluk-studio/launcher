@@ -2,19 +2,24 @@
   // Importing other modules
   import { onMount } from 'svelte';
   import { CurrentRouteStore } from 'src/stores';
+  import { PageChangeAnimator } from 'src/components';
 
   // Importing icons
   import ChevronDown from '~icons/ri/arrow-down-s-line';
-  import CloseFill from '~icons/ri/close-fill';
 
   import GridFill from '~icons/ri/grid-fill';
   import ListCheck from '~icons/ri/list-check';
+  import { navigate } from 'svelte-routing';
 
   onMount(() => {
     // Tweaking CurrentRoute settings
     CurrentRouteStore.showSidebar();
+    CurrentRouteStore.setApplicationRoute(true);
+    CurrentRouteStore.setPageLink("/explore");
   });
 </script>
+
+<PageChangeAnimator />
 
 <!-- Filters -->
 <section class="w-full py-4 px-4">
@@ -52,11 +57,13 @@
 <section class="w-full pl-4">
   <!-- Games -->
   <div class="flex flex-wrap items-stretch justify-between">
-    { #each new Array(10) as _ }
-      <div class="w-1/4 lg:w-1/5 pr-4 py-2 relative">
+    { #each new Array(6) as _ }
+      <div on:click={() => {
+        navigate("/library/game/testId");
+      }} class="cursor-pointer w-1/3 pr-4 py-2 relative">
         <div class="w-full h-full bg-foreground rounded-xl">
           <!-- Image -->
-          <div class="h-48 bg-red-500 rounded-t-xl"></div>
+          <div style="background-image: url('https://www.minecraft.net/content/dam/games/minecraft/key-art/CC-Update-Part-II_600x360.jpg'); background-position: center; background-size: cover;" class="h-48 rounded-t-xl"></div>
 
           <!-- Information -->
           <div>

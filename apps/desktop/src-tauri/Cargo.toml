@@ -18,9 +18,12 @@ tauri-build = { version = "1.0.4", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.0.5", features = ["api-all", "system-tray"] }
-hyper = "0.14.20"
 webbrowser = "0.7.1"
 ts-rs = "6.1"
+tiny_http="0.11"
+url="2.3.1"
+reqwest= { version = "0.11.12", features = ["blocking"] }
+tokio = { version = "1", features = ["full"] }
 
 [features]
 # by default Tauri runs in production mode

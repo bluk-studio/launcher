@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: api-backend-ingress
+  namespace: bluk-launcher
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`apis.odzi.dog`) && PathPrefix(`/bluk/launcher/v1`)
+      kind: Rule
+      services:
+        - name: api-backend-service
+          port: 3000

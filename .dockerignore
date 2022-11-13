@@ -1,0 +1,10 @@
+**/.devspace
+
+# Node-related
+**/node_modules
+**/dist
+
+# Rust-related
+**/target
+
+# Other

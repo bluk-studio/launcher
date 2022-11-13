@@ -3,6 +3,9 @@ import { writable } from "svelte/store";
 // Store interface
 export interface ICurrentRouteStore {
   isSidebarHidden?: boolean,
+  isApplicationRoute?: boolean,
+
+  pageLink: string,
 };
 
 // Function that'll create our store
@@ -10,6 +13,9 @@ function _initialize() {
   // Default store
   const _default: ICurrentRouteStore = {
     isSidebarHidden: true,
+    isApplicationRoute: false,
+
+    pageLink: '/login'
   };
 
   // Initializing
@@ -37,6 +43,24 @@ function _initialize() {
         return object;
       });
     },
+
+    // Set isApplicationRoute
+    setApplicationRoute(value: boolean) {
+      update((object) => {
+        object.isApplicationRoute = value;
+
+        return object;
+      });
+    },
+
+    // Set pageLink
+    setPageLink(link: string) {
+      update((object) => {
+        object.pageLink = link;
+        
+        return object;
+      });
+    }
   };
 };
 

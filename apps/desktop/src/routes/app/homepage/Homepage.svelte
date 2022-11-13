@@ -2,6 +2,7 @@
   // Importing other modules
   import { onMount } from 'svelte';
   import { CurrentRouteStore } from 'src/stores';
+  import { PageChangeAnimator } from 'src/components';
 
   // Icons
   import ExternalLink from '~icons/ri/external-link-line';
@@ -15,9 +16,13 @@
   onMount(() => {
     // CurrenRoute setup
     // > Enabling sidebar
-    CurrentRouteStore.showSidebar(); 
+    CurrentRouteStore.showSidebar();
+    CurrentRouteStore.setApplicationRoute(true);
+    CurrentRouteStore.setPageLink("/homepage");
   });
 </script>
+
+<PageChangeAnimator />
 
 <!-- Hero -->
 <section class="w-full h-full relative">
