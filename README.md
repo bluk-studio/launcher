@@ -16,7 +16,8 @@ Bluk Launcher is a multi-purpose game launcher, built on top of [Tauri](https://
 
 ### Screenshots
 
-*To be added*
+<img alt="Authorization page screenshot" src="https://assets.k8s.odzi.dog/odzi-assets/bluk/launcher/screenshots/auth_page.jpeg" />
+<img alt="Settings page screenshot" src="https://assets.k8s.odzi.dog/odzi-assets/bluk/launcher/screenshots/settings_page.jpeg" />
 
 ### Problems
 
