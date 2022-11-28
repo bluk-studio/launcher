@@ -1,7 +1,7 @@
 <script lang="ts">
   // Importing modules
   import { onMount } from 'svelte';
-  import { CurrentRouteStore } from 'src/stores';
+  import { CurrentRouteStore, ProfileStore, ConfigStore } from 'src/stores';
   import { invoke } from '@tauri-apps/api/tauri';
   import { listen } from '@tauri-apps/api/event';
   import type { Event } from '@tauri-apps/api/event';
@@ -28,9 +28,18 @@
   
   // onMount function
   onMount(() => {
-    // CurrentStore setup
-    CurrentRouteStore.hideSidebar();
-    CurrentRouteStore.setApplicationRoute(false);
+    // If user is authorized - send him to default page
+    if ($ProfileStore.isAuthorized) {
+      navigate($ConfigStore.defaultPage);
+    };
+
+    // Updating CurrentRoute Settings
+    CurrentRouteStore.setPage({
+      isApplicationRoute: false,
+      isSidebarHidden: true,
+
+      pageLink: '/login',
+    });
   });
 
   async function startAuthorization(type: AuthorizationType) {
@@ -38,14 +47,17 @@
 
     // Listening to application's "token_received" event
     const unlisten = await listen('token_received', async (event: Event<TokenReceivedEventPayload>) => {
-      // Asking application to authorize our user
-      await invoke("update_profile", { profileId: event.payload.profileId });
-
-      // Redirecting
-      navigate("/library/game/testId");
-
-      // Unlistening
-      unlisten();
+      // Asking our ProfileStore to fetch and then save user with this token
+      if (await ProfileStore.fetchByToken(event.payload.id)) {
+        // User is fetched, sending to default page
+        navigate($ConfigStore.defaultPage);
+        
+        // Unlistening
+        unlisten();
+      } else {
+        // todo error
+        console.error("Error while fetching user by token");
+      };
     });
 
     // Sending request to backend

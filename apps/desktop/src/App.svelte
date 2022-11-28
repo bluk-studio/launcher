@@ -3,7 +3,7 @@
   import './app.postcss';
 
   // Router configuration
-  import { Router, Route } from 'svelte-routing';
+  import { Router, Route, navigate } from 'svelte-routing';
   import { Explore, Login, Homepage, Game, News, Settings } from 'src/routes';
 
   // Component imports
@@ -13,35 +13,42 @@
   // Importing other modules...
   import { onMount } from 'svelte';
   import { ConfigStore, CurrentRouteStore, ProfileStore } from 'src/stores';
+  import { invoke } from '@tauri-apps/api';
+  import { BaseDirectory, createDir, exists } from '@tauri-apps/api/fs';
 
   // Variables
   let loading = true;
 
+  async function checkAppDataDir() {
+    console.log('checking dir');
+    if (!await exists('org.bluk.launcher', { dir: BaseDirectory.LocalData })) {
+      console.log('creating dir');
+      await createDir('org.bluk.launcher', { dir: BaseDirectory.LocalData });
+    };
+  };
+
   // OnMount hook to load application configuration
   onMount(async () => {
-    // todo
+    // Showing this window
+    await invoke("show_window");
+
+    // We need to create appdata directory for our application.
+    checkAppDataDir();
+
     // Getting application configuration from it's backend...
     await ConfigStore.fetchFromBackend();
 
-    // todo
     // Getting user information
-    
-    // Starting up some listeners
-    ProfileStore.listenToProfileUpdates();
+    if (await ProfileStore.fetchFromStorage()) {
+      // User is logged in
+      navigate($ConfigStore.defaultPage);
+    } else {
+      // User is not logged in - sending user to login page
+      navigate("/login");
+    };
 
-    setTimeout(() => {
-      loading = false;
-    }, 500);
+    loading = false;
   });
-
-  // Listening to route changes
-  // CurrentRouteStore.subscribe((object) => {
-  //   if (object.isApplicationRoute) {
-  //     if (!$ProfileStore.isAuthorized) {
-  //       navigate("/login");
-  //     };
-  //   };
-  // });
 </script>
 
 <div class="w-full h-screen flex flex-col relative bg-background">
@@ -65,7 +72,7 @@
       </div>
     { :else }
       <div class="w-full flex-grow flex overflow-y-hidden">
-        <Router url={ $ProfileStore.isAuthorized ? "/explore" : "/login" }>
+        <Router url="/login">
           <!-- Sidebar -->
           { #if !$CurrentRouteStore.isSidebarHidden }
             <Sidebar />

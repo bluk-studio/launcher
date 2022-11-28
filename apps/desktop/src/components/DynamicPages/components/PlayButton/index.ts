@@ -1,6 +1,13 @@
 import Component from './PlayButtonComponent.svelte';
 
-export const PlayButtonComponent = {
+export interface IPlayButtonComponent {
+  type: "PlayButton";
+  attributes: {
+    text?: String,
+  }
+};
+
+export const PlayButtonComponentDeclaration = {
   type: "PlayButton",
   component: Component,
 };

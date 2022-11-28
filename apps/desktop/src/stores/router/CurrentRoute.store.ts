@@ -25,42 +25,16 @@ function _initialize() {
   return {
     subscribe,
 
-    // Sidebar manipulation function
-    // to hide sidebar...
-    hideSidebar() { 
-      update((object) => {
-        object.isSidebarHidden = true;
+    setPage(settings = {
+      isSidebarHidden: true,
+      isApplicationRoute: false,
 
-        return object;
-      }) 
-    },
-
-    // ...and to show our sidebar
-    showSidebar() {
-      update((object) => {
-        object.isSidebarHidden = false;
-
-        return object;
+      pageLink: '/login',
+    }) {
+      update(() => {
+        return settings;
       });
     },
-
-    // Set isApplicationRoute
-    setApplicationRoute(value: boolean) {
-      update((object) => {
-        object.isApplicationRoute = value;
-
-        return object;
-      });
-    },
-
-    // Set pageLink
-    setPageLink(link: string) {
-      update((object) => {
-        object.pageLink = link;
-        
-        return object;
-      });
-    }
   };
 };
 

@@ -1,8 +1,14 @@
 import { writable } from "svelte/store";
-import { emit, listen } from "@tauri-apps/api/event";
-import { invoke } from "@tauri-apps/api/tauri";
-import type { Event } from '@tauri-apps/api/event';
-import type { ProfileUpdatedEventPayload } from '$types/backend_to_frontend/events/ProfileUpdatedEventPayload';
+import { exists, readTextFile } from '@tauri-apps/api/fs';
+import { ConfigStore, type IConfigStore } from "../config";
+import { getStore } from "../StoreHelpers";
+import { AES, enc } from 'crypto-js';
+
+import { BaseDirectory } from '@tauri-apps/api/path';
+import { writeTextFile } from '@tauri-apps/api/fs';
+
+import type { Token } from "$types/entities/Token";
+import type { Profile } from "$types/entities/Profile";
 
 // Store interface
 export interface IProfileStore {
@@ -27,22 +33,68 @@ function _initialize() {
   return { 
     subscribe,
 
-    // listenToProfileUpdates
-    listenToProfileUpdates() {
-      listen("profile_updated", ({ payload }: Event<ProfileUpdatedEventPayload>) => {
-        // Updating profile
-        
+    // Fetch user from storage
+    async fetchFromStorage(): Promise<boolean> {
+      if (await exists("token.json", { dir: BaseDirectory.AppLocalData })) {
+        // Reading this file
+        const contents = await readTextFile("token.json", { dir: BaseDirectory.AppLocalData });
+
+        // Parsing as json
+        try {
+          const config = await getStore<IConfigStore>(ConfigStore);
+          const token = AES.decrypt(contents, config.encryption.key).toString(enc.Utf8);
+
+          // Trying to fetch this user by token
+          return await ProfileStore.fetchByToken(token);
+        } catch {};
+      };
+      
+      return false;
+    },
+
+    // Fetch by token
+    async fetchByToken(tokenId: String): Promise<boolean> {
+      const config = await getStore<IConfigStore>(ConfigStore);
+
+      try {
+        // Fetching token information
+        const token: Token = await (async () => {
+          const response = await fetch(`${config.launcherApiUrl}/token/${tokenId}`);
+          return await response.json();
+        })();
+
+        // Fetching user
+        const profile: Profile = await (async () => {
+          const response = await fetch(`${config.launcherApiUrl}/profile/${token.profileId}`);
+          return await response.json();
+        })();
+
+        // Saving token
+        await ProfileStore.saveToken(token.id);
+
+        // Updating store
         update((object) => {
           object.isAuthorized = true;
           
-          object.id = payload.id;
-          object.email = payload.email;
-          object.avatar = payload.avatar;
-          object.username = payload.username;
+          object.id = profile.id;
+          object.email = profile.email;
+          object.avatar = profile.avatar;
+          object.username = profile.username;
 
           return object;
         });
-      });
+
+        return true;
+      } catch(error) {
+        console.log(error);
+        return false;
+      };
+    },
+
+    // Save token
+    async saveToken(token: string) {
+      const config = await getStore<IConfigStore>(ConfigStore);
+      await writeTextFile('token.json', AES.encrypt(token, config.encryption.key).toString(), { dir: BaseDirectory.AppLocalData });
     },
   };
 };

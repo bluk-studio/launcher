@@ -16,9 +16,11 @@
   onMount(() => {
     // CurrenRoute setup
     // > Enabling sidebar
-    CurrentRouteStore.showSidebar();
-    CurrentRouteStore.setApplicationRoute(true);
-    CurrentRouteStore.setPageLink("/homepage");
+    CurrentRouteStore.setPage({
+      isSidebarHidden: false,
+      isApplicationRoute: true,
+      pageLink: '/homepage',
+    });
   });
 </script>
 

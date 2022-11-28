@@ -9,6 +9,6 @@
 
 { #each page as component }
   { #if [...Components.keys()].includes(component.type) }
-    <svelte:component this={Components.get(component.type)} {...component.atttributes} />
+    <svelte:component this={Components.get(component.type)} {...component.attributes} />
   { /if }
 {/each }

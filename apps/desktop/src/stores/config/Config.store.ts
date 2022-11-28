@@ -8,7 +8,12 @@ export interface IConfigStore {
   // Theme-related configuration
   theme: {
     logotype: string,
-  }
+  },
+  encryption: {
+    key: string,
+  },
+  launcherApiUrl: string,
+  defaultPage: string,
 };
 
 // Function, that'll initialize our store
@@ -17,7 +22,12 @@ function _initialize() {
   const _default: IConfigStore = {
     theme: {
       logotype: "https://res.cloudinary.com/lococovu-cdn/image/upload/v1636815887/bluk-studio-white.svg"
-    }
+    },
+    encryption: {
+      key: 'dev-key',
+    },
+    launcherApiUrl: "https://apis.odzi.dog/bluk/launcher/v1",
+    defaultPage: "/library/game/civcraft",
   };
 
   // Initializing store

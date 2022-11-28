@@ -9,10 +9,12 @@
 
   onMount(() => {
     // Updating CurrentRouteStore settings
-    CurrentRouteStore.showSidebar();
-    CurrentRouteStore.setApplicationRoute(true);
-    CurrentRouteStore.setPageLink("/settings");
-  })
+    CurrentRouteStore.setPage({
+      isApplicationRoute: true,
+      isSidebarHidden: false,
+      pageLink: '/settings',
+    });
+  });
 </script>
 
 <style>

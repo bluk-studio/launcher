@@ -17,7 +17,8 @@
     "isolatedModules": true,
     "paths": {
       "$types/backend_to_frontend/*": ["../../libs/types/generated/backend_to_frontend/*"],
-      "$types/web_to_desktop/*": ["../../libs/types/generated/web_to_desktop/*"]
+      "$types/web_to_desktop/*": ["../../libs/types/generated/web_to_desktop/*"],
+      "$types/*": ["../../libs/types/src/typescript/*"]
     }
   },
   "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],

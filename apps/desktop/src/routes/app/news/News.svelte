@@ -4,8 +4,5 @@
 
   onMount(() => {
     // Updating CurrentRouteStore settings
-    CurrentRouteStore.showSidebar();
-    CurrentRouteStore.setApplicationRoute(true);
-    CurrentRouteStore.setPageLink("/news");
   })
 </script>

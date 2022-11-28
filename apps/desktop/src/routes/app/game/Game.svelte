@@ -6,9 +6,13 @@
   import { fade } from "svelte/transition";
 
   onMount(() => {
-    CurrentRouteStore.showSidebar();
-    CurrentRouteStore.setApplicationRoute(true);
-    CurrentRouteStore.setPageLink(`/${ pageType }/game/${ id }`);
+    // CurrentRoute Settings
+    CurrentRouteStore.setPage({
+      isSidebarHidden: false,
+      isApplicationRoute: true,
+
+      pageLink: `/${ pageType }/game/${ id }`,
+    });
 
     // Using GameStore to fetch information about this game
     GameStore.load(id);

@@ -13,9 +13,11 @@
 
   onMount(() => {
     // Tweaking CurrentRoute settings
-    CurrentRouteStore.showSidebar();
-    CurrentRouteStore.setApplicationRoute(true);
-    CurrentRouteStore.setPageLink("/explore");
+    CurrentRouteStore.setPage({
+      isSidebarHidden: false,
+      isApplicationRoute: true,
+      pageLink: '/explore',
+    });
   });
 </script>
 

@@ -1,6 +1,3 @@
-export interface IComponent {
-  type: String,
-  atttributes: Record<string, string | object | boolean>,
-};
+import type { IComponent } from "../components";
 
 export type IPage = Array<IComponent>;

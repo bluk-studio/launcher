@@ -49,22 +49,110 @@ function _initialize() {
 
           id,
           title: "CivCraft",
-          image: "https://uploads.turbologo.com/uploads/design/preview_image/4473925/preview_image20210508-28981-14u73rt.png",
+          image: "https://i.pinimg.com/originals/cc/40/6a/cc406a8382d8df7eb5f395ec884d3c95.png",
 
           pages: {
             library: [
               {
                 type: "Hero",
-                atttributes: {
-                  title: "Test title!",
-                  subtitle: "Test subtitle!",
+                attributes: {
+                  title: "CivCraft",
+                  subtitle: "Lorem ipsum, dolor sit amet consectetur adipisicing.",
                   withGameImage: true,
                   subcomponents: [
+                    {
+                      type: "Counter",
+                      attributes: {
+                        text: "Игроков: 10/200"
+                      }
+                    },
                     {
                       type: "PlayButton",
                       attributes: {}
                     }
                   ],
+                }
+              },
+
+              {
+                type: 'Container',
+                attributes: {
+                  padding: 'sm',
+                  gap: 'md',
+                  childrens: [
+                    {
+                      type: 'Container',
+                      attributes: {
+                        width: '2/3',
+                        direction: 'vertical',
+                        childrens: [
+                          {
+                            type: 'Container',
+                            attributes: {
+                              direction: 'vertical',
+                              childrens: [
+                                {
+                                  type: 'Text',
+                                  attributes: {
+                                    text: 'Новости',
+                                    size: 'huge'
+                                  }
+                                },
+                                {
+                                  type: 'Text',
+                                  attributes: {
+                                    text: 'Все самые важные новости на данном проекте',
+                                    color: 'text-white text-opacity-70',
+                                    size: 'sm'
+                                  }
+                                },
+                              ]
+                            }
+                          },
+                          {
+                            type: 'Post',
+                            attributes: {}
+                          },
+                          {
+                            type: 'Post',
+                            attributes: {}
+                          },
+                          {
+                            type: 'Post',
+                            attributes: {}
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      type: 'Container',
+                      attributes: {
+                        direction: 'vertical',
+                        gap: 'sm',
+                        width: '1/3',
+                        childrens: [
+                          {
+                            type: "Button",
+                            attributes: {
+                              type: "pictured",
+                            }
+                          },
+                          {
+                            type: "Button",
+                            attributes: {
+                              type: "simple",
+                            }
+                          },
+                          {
+                            type: "Button",
+                            attributes: {
+                              type: "simple",
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               }
             ],
