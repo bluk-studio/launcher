@@ -1,6 +1,6 @@
 import ButtonComponent from './ButtonComponent.svelte';
 
-export type IButtonComponent = BaseButton<SimpleButton> | BaseButton<PicturedButton>;
+export type IButtonComponent = BaseButton<SimpleButton> | BaseButton<PicturedButton> | BaseButton<LinkedButton>;
 
 // Different kinds of buttons
 interface BaseButton<T> {
@@ -10,10 +10,18 @@ interface BaseButton<T> {
 
 interface SimpleButton {
     type: "simple";
+    text: string,
+};
+
+interface LinkedButton {
+    type: "link",
+    text: string,
+    link: string,
 };
 
 interface PicturedButton {
     type: "pictured";
+    text: string,
 };
 
 export const ButtonComponentDeclaration = {

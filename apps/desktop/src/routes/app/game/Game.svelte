@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Page, PageChangeAnimator } from "src/components";
-  import { CurrentRouteStore, GameStore } from "src/stores";
+  import { CurrentRouteStore, CustomPageThemeStore, GameStore } from "src/stores";
   import { onMount, onDestroy } from "svelte";
   import { BarLoader } from "svelte-loading-spinners";
   import { fade } from "svelte/transition";
@@ -16,6 +16,21 @@
 
     // Using GameStore to fetch information about this game
     GameStore.load(id);
+
+    GameStore.subscribe((object) => {
+      if (object.isLoaded) {
+        // Library page
+        if (pageType == 'library' && object.pages.library.theme) {
+          // Updating theme
+          CustomPageThemeStore.update(object.pages.library.theme);
+        };
+
+        if (pageType == 'store' && object.pages.store.theme) {
+          // Updating theme
+          CustomPageThemeStore.update(object.pages.store.theme);
+        };
+      }
+    });
   });
 
   onDestroy(() => {

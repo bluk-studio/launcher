@@ -60,12 +60,16 @@ function _initialize() {
         // Fetching token information
         const token: Token = await (async () => {
           const response = await fetch(`${config.launcherApiUrl}/token/${tokenId}`);
+          
+          if (response.status != 200) throw new Error("Error fetching user token");
           return await response.json();
         })();
 
         // Fetching user
         const profile: Profile = await (async () => {
           const response = await fetch(`${config.launcherApiUrl}/profile/${token.profileId}`);
+          
+          if (response.status != 200) throw new Error("Error fetching user profile");
           return await response.json();
         })();
 

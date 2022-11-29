@@ -17,10 +17,7 @@ export interface ILoadedGame {
   id: String,
   title: String,
   image: String,
-  colors?: {
 
-  },
-  
   pages: {
     store: IPage,
     library: IPage,
@@ -49,114 +46,139 @@ function _initialize() {
 
           id,
           title: "CivCraft",
-          image: "https://i.pinimg.com/originals/cc/40/6a/cc406a8382d8df7eb5f395ec884d3c95.png",
+          image: "https://media.discordapp.net/attachments/650727274743726090/1046751986214772746/Artboard_1.png?width=427&height=427",
 
           pages: {
-            library: [
-              {
-                type: "Hero",
-                attributes: {
-                  title: "CivCraft",
-                  subtitle: "Lorem ipsum, dolor sit amet consectetur adipisicing.",
-                  withGameImage: true,
-                  subcomponents: [
-                    {
-                      type: "Counter",
-                      attributes: {
-                        text: "Игроков: 10/200"
+            library: {
+              components: [
+                {
+                  type: "Hero",
+                  attributes: {
+                    title: "CivCraft",
+                    subtitle: "Lorem ipsum, dolor sit amet consectetur adipisicing.",
+                    withGameImage: true,
+                    subcomponents: [
+                      {
+                        type: "Counter",
+                        attributes: {
+                          fetchOptions: {
+                            interval: 1500,
+                            link: "https://api.civcraft.ru/statistics/players?returnType=inLauncher"
+                          }
+                        }
+                      },
+                      {
+                        type: "PlayButton",
+                        attributes: {}
                       }
-                    },
-                    {
-                      type: "PlayButton",
-                      attributes: {}
-                    }
-                  ],
-                }
-              },
+                    ],
+                  }
+                },
 
-              {
-                type: 'Container',
-                attributes: {
-                  padding: 'sm',
-                  gap: 'md',
-                  childrens: [
-                    {
-                      type: 'Container',
-                      attributes: {
-                        width: '2/3',
-                        direction: 'vertical',
-                        childrens: [
-                          {
-                            type: 'Container',
-                            attributes: {
-                              direction: 'vertical',
-                              childrens: [
-                                {
-                                  type: 'Text',
-                                  attributes: {
-                                    text: 'Новости',
-                                    size: 'huge'
-                                  }
-                                },
-                                {
-                                  type: 'Text',
-                                  attributes: {
-                                    text: 'Все самые важные новости на данном проекте',
-                                    color: 'text-white text-opacity-70',
-                                    size: 'sm'
-                                  }
-                                },
-                              ]
+                {
+                  type: 'Container',
+                  attributes: {
+                    padding: 'sm',
+                    gap: 'md',
+                    childrens: [
+                      {
+                        type: 'Container',
+                        attributes: {
+                          width: '2/3',
+                          direction: 'vertical',
+                          childrens: [
+                            {
+                              type: 'Container',
+                              attributes: {
+                                direction: 'vertical',
+                                childrens: [
+                                  {
+                                    type: 'Text',
+                                    attributes: {
+                                      text: 'Новости',
+                                      size: 'huge'
+                                    }
+                                  },
+                                  {
+                                    type: 'Text',
+                                    attributes: {
+                                      text: 'Все самые важные новости на данном проекте',
+                                      color: 'text-white text-opacity-70',
+                                      size: 'sm'
+                                    }
+                                  },
+                                ]
+                              }
+                            },
+                            {
+                              type: 'Post',
+                              attributes: {}
+                            },
+                            {
+                              type: 'Post',
+                              attributes: {}
+                            },
+                            {
+                              type: 'Post',
+                              attributes: {}
                             }
-                          },
-                          {
-                            type: 'Post',
-                            attributes: {}
-                          },
-                          {
-                            type: 'Post',
-                            attributes: {}
-                          },
-                          {
-                            type: 'Post',
-                            attributes: {}
-                          }
-                        ]
+                          ]
+                        }
+                      },
+                      {
+                        type: 'Container',
+                        attributes: {
+                          direction: 'vertical',
+                          gap: 'sm',
+                          width: '1/3',
+                          childrens: [
+                            {
+                              type: "Button",
+                              attributes: {
+                                type: "pictured",
+                                text: "Карта"
+                              }
+                            },
+                            {
+                              type: "Container",
+                              attributes: {
+                                direction: "horizontal",
+                                gap: "sm",
+                                childrens: [
+                                  {
+                                    type: "Button", 
+                                    attributes: {
+                                      type: "link",
+                                      text: "Дискорд",
+                                      link: "google.com",
+                                    }
+                                  },
+                                  {
+                                    type: "Button", 
+                                    attributes: {
+                                      type: "link",
+                                      text: "Наш ВК",
+                                      link: "google.com",
+                                    }
+                                  },            
+                                ]
+                              }
+                            },
+                            {
+                              type: "PlayerTop",
+                              attributes: {}
+                            }
+                          ]
+                        }
                       }
-                    },
-                    {
-                      type: 'Container',
-                      attributes: {
-                        direction: 'vertical',
-                        gap: 'sm',
-                        width: '1/3',
-                        childrens: [
-                          {
-                            type: "Button",
-                            attributes: {
-                              type: "pictured",
-                            }
-                          },
-                          {
-                            type: "Button",
-                            attributes: {
-                              type: "simple",
-                            }
-                          },
-                          {
-                            type: "Button",
-                            attributes: {
-                              type: "simple",
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
+                    ]
+                  }
                 }
-              }
-            ],
-            store: []
+              ],
+            },
+            store: {
+              components: []
+            },
           }
         } as ILoadedGame;
       });

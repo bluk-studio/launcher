@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Components } from "..";
   import type { IComponent } from "../../components";
-  import { GameStore } from "../../../../stores";
+  import { GameStore, CustomPageThemeStore } from "../../../../stores";
   import { onMount } from "svelte";
 
   $: doSubcomponentsExists = subcomponents.length > 0;
@@ -25,16 +25,16 @@
 </style>
 
 <!-- Hero component -->
-<div class="hero-component w-full flex bg-dark-background items-center { doSubcomponentsExists ? "justify-between" : "justify-center" } p-10">
+<div style="background-color: { $CustomPageThemeStore.darkBackground }" class="hero-component w-full flex items-center { doSubcomponentsExists ? "justify-between" : "justify-center" } p-10">
   <!-- Title and subtitle -->
   <div class="w-1/2 flex items-center">
     { #if withGameImage }
-      <div class="w-20 h-20 mr-5" style="background-image: url('{ $GameStore.image }'); background-size: cover;"></div>
+      <div class="w-20 h-20 mr-5 rounded-full" style="background-image: url('{ $GameStore.image }'); background-size: cover;"></div>
     { /if }
 
     <div>
-      <h1 class="text-white text-5xl">{ title }</h1>
-      <h2 class="text-sm text-white opacity-80">{ subtitle }</h2>
+      <h1 style="color: { $CustomPageThemeStore.text }" class="text-5xl">{ title }</h1>
+      <h2 style="color: { $CustomPageThemeStore.text }" class="text-sm opacity-80">{ subtitle }</h2>
     </div>
   </div>
 

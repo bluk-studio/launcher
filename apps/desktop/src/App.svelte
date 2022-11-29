@@ -20,9 +20,7 @@
   let loading = true;
 
   async function checkAppDataDir() {
-    console.log('checking dir');
     if (!await exists('org.bluk.launcher', { dir: BaseDirectory.LocalData })) {
-      console.log('creating dir');
       await createDir('org.bluk.launcher', { dir: BaseDirectory.LocalData });
     };
   };
