@@ -18,14 +18,3 @@ Bluk Launcher is a multi-purpose game launcher, built on top of [Tauri](https://
 
 <img alt="Authorization page screenshot" src="https://assets.k8s.odzi.dog/odzi-assets/bluk/launcher/screenshots/auth_page.jpeg" />
 <img alt="Settings page screenshot" src="https://assets.k8s.odzi.dog/odzi-assets/bluk/launcher/screenshots/settings_page.jpeg" />
-
-### Problems
-
-1. **Authorization logic**  
-    Current authorization logic can be described with this schema:  
-    
-    Frontend asks Backend to open authorization link in user's browser -> User completes authorization and is redirected to *http://localhost/auth/token* with user token -> Backend send this token to Frontend, which then asks Backend to fetch user information using this token.  
-
-    Backend should automatically save this token to some local file and automatically fetch user profile. I could not achieve this (for now) due to my limited knowledge of Rust threads, but I'll definitely fix this issue. We need to save user token to ProfileState in file [apps/desktop/src-tauri/src/main.rs](https://github.com/bluk-studio/launcher/blob/master/apps/desktop/src-tauri/src/main.rs#L70) line 70, and then immediately start fetching user information, which we'll then send to frontend.
-    
-    *Frontend should not send any requests to external APIs at all.*
