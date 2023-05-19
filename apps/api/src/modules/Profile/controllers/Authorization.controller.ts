@@ -12,32 +12,21 @@ export class AuthorizationController {
     private readonly authService: AuthorizationService,
   ) {}
 
+  @Get("/redirect")
+  public async redirectToLoginPage(
+    @Res() res: Response,
+    @Query("redirectUrl") redirectUrl?: string,
+  ) {
+    res.redirect(`https://auth.odzi.dog/flow?redirectUrl=${ encodeURI(`${ environment.siteUrl }${ environment.globalPrefix }/auth/token?redirectUrl=${ redirectUrl ?? "https://bluk.studio" }`) }&redirectVisualIdentifier=bluk launcher`);
+  };
+
   @Get("/token")
   public async authorize(
     @Req() req: Request,
     @Res() res: Response,
     @Query("redirectUrl") redirectUrl?: string,
   ) {
-    let token;
-    try {
-      token = await this.authService.handleGetToken(req, redirectUrl);
-    } catch (error) {
-      if (redirectUrl) {
-        // Saving redirectUrl to auth.odzi.dog's cookies
-        const expires = new Date();
-        expires.setHours(expires.getHours() + 1);
-
-        res.cookie("redirectUrl", `${ environment.siteUrl }${ environment.globalPrefix }/auth/token?redirectUrl=${ redirectUrl }`, {
-          domain: "odzi.dog",
-          expires,
-        });
-
-        // Redirecting user to login page
-        res.redirect("https://auth.odzi.dog/login");
-      } else {
-        throw error;
-      };
-    };
+    const token = await this.authService.handleGetToken(req, redirectUrl);
 
     if (redirectUrl) {
       // Checking redirect origin
@@ -47,7 +36,7 @@ export class AuthorizationController {
       // Redirecting
       const url = parseUrl(redirectUrl);
       
-      return res.redirect(`${url.href}${Object.keys(url.query).length == 0 ? `?token=${ token.id }` : `&token=${ token.id }`}`);
+      return res.redirect(`${url.href}${Object.keys(url.query).length == 0 ? `?token=${ token.jwt }` : `&token=${ token.jwt }`}`);
     } else {
       // Returning token information
       return res.send(token);

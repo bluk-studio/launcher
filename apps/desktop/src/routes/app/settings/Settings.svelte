@@ -3,9 +3,12 @@
   import { onMount } from "svelte";
 
   import { ProfileStore } from '../../../stores';
+  import { BasicPanel } from "./Panels";
+
   import RiSettings3Line from '~icons/ri/settings-3-line'
   import RiLogoutBoxRLine from '~icons/ri/logout-box-r-line'
   import RiLock2Line from '~icons/ri/lock-2-line'
+  import RiGamepadLine from '~icons/ri/gamepad-line'
 
   onMount(() => {
     // Updating CurrentRouteStore settings
@@ -14,7 +17,25 @@
       isSidebarHidden: false,
       pageLink: '/settings',
     });
+
+    // Updating currently selected panel (if needed)
   });
+
+  const panels: Array<{ text: string, icon: any, component: any }> = [
+    {
+      text: "Базовые настройки",
+      icon: RiSettings3Line,
+      component: BasicPanel,
+    },
+    {
+      text: "Установленные игры",
+      icon: RiGamepadLine,
+      component: BasicPanel
+    }
+  ];
+
+  let currentPanelId: number = 0;
+  $: currentPanel = panels[currentPanelId];
 </script>
 
 <style>
@@ -61,65 +82,22 @@
 
   <!-- Settings categories -->
   <div class="mt-12 flex items-center justify-items-start">
-    { #each [{ text: "Базовые настройки", icon: RiSettings3Line }, { text: "Защита", icon: RiLock2Line }] as link }
-      <button class="mx-3 flex items-center opacity-70 px-4 py-2 { link.text == "Базовые настройки" ? "border-b-2 border-yellow-400 opacity-100" : "" }">
-        <svelte:component this={link.icon} class="text-white w-4" />
+    { #each panels as panel }
+      { @const panelId = panels.findIndex((x) => x == panel) }
+      { @const isCurrentPanel = panelId == currentPanelId }
 
-        <p class="text-sm text-white ml-1">{ link.text }</p>
+      <button on:click={() => {
+        currentPanelId = panelId;
+      }} class="mx-3 flex items-center opacity-70 px-4 py-2 { isCurrentPanel ? "border-b-2 border-yellow-400 opacity-100" : "" }">
+        <svelte:component this={panel.icon} class="text-white w-4" />
+
+        <p class="text-sm text-white ml-1">{ panel.text }</p>
       </button>
     { /each }
   </div>
 
-  <!-- Category title -->
-  <div class="mt-5 w-2/3 px-3">
-    <h1 class="text-xl text-white">Базовые настройки</h1>
-    <p class="text-sm text-white opacity-70">Всё самое базовое - начиная от имени пользователя и заканчивая аватаркой.</p>
-  </div>
-
-  <div class="w-full px-3">
-    <div class="mt-4 w-full border-b-2 border-light-foreground"></div>
-  </div>
-  
-  <!-- Username -->
-  <div class="w-full flex items-start px-3 my-8">
-    <!-- Field title -->
-    <div class="w-1/3">
-      <h1 class="text-md text-white font-medium">Имя пользователя</h1>
-      <p class="text-xs text-white opacity-70 w-2/3">Данное имя будет отображаться только в лаунчере.</p>
-    </div>
-
-    <!-- Field itself -->
-    <div class="w-2/3 rounded-lg px-4 py-1.5 bg-background border-2 border-light-foreground">
-      <input class="text-white bg-background" type="text" value={$ProfileStore.username}>
-    </div>
-  </div>
-
-  <div class="w-full flex items-start px-3 my-8">
-    <!-- Field title -->
-    <div class="w-1/3">
-      <h1 class="text-md text-white font-medium">Готов трахаца?</h1>
-      <p class="text-xs text-white opacity-70 w-2/3">Lorem ipsum dolor sit amet.</p>
-    </div>
-
-    <!-- Field itself -->
-    <div class="w-2/3">
-      <div class="w-min rounded-md flex items-center bg-background">
-        <div class="rounded-l-md px-4 py-1.5 bg-green-400">
-          <p class="text-white">Да!</p>
-        </div>
-        
-        <div class="rounded-r-md px-4 py-1.5">
-          <p class="text-white opacity-70">Нет</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Odzi.dog link -->
-  <div class="w-full py-32 flex items-center justify-center">
-    <div class="w-2/3 py-6 px-6 rounded-xl bg-background">
-      <h1 class="text-xl text-white">Хотите изменить что-то другое?</h1>
-      <p class="text-sm text-white opacity-70">Другие базовые настройки вашего аккаунта - такие как <span class="border-b-2 border-light-foreground">аватарка</span>, <span class="border-b-2 border-light-foreground">почта</span> или <span class="border-b-2 border-light-foreground">ник в лаунчере</span> - можно изменить только на сервисе odzi.dog.<br /><br />Для того, что бы это сделать, нажмите на кнопку ниже.</p>
-    </div>
-  </div>
+  <!-- Currently selected panel -->
+  { #if currentPanel }
+    <svelte:component this={currentPanel.component} />
+  { /if }
 </main>

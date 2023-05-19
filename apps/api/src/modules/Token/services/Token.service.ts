@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -14,10 +14,12 @@ export class TokenService {
   ) {}
 
   public async getByTokenId(id: string): Promise<Token | null> {
-    // Verifying provided token
-    const tokenId = await this.jwtService.verifyAsync(id);
-    
-    return await this.getById(tokenId); 
+    try {
+      const token = await this.jwtService.verifyAsync(id) as { id: string };
+      return await this.getById(token.id);
+    } catch {
+      return null;
+    };
   };
 
   // 
@@ -27,6 +29,31 @@ export class TokenService {
     if (!token) return null;
 
     return await this.transformToken(token);
+  };
+
+  public async getProfileTokens(profileId: string): Promise<Array<Token>> {
+    const tokens = await this.tokenModel.find({ profileId });
+    const transformedTokens = [];
+
+    for (const token of tokens) {
+      transformedTokens.push(await this.transformToken(token));
+    };
+
+    return transformedTokens;
+  };
+
+  public async deleteById(id: string): Promise<Token> {
+    // Getting token with this id
+    const token = await this.getById(id);
+    if (!token) throw new NotFoundException("Token not found");
+
+    console.log("delete by id:", token);
+
+    // Deleting this token
+    console.log(await this.tokenModel.deleteOne({ id: token.id }));
+
+    // Returning it back
+    return token;
   };
 
   // 
@@ -43,10 +70,9 @@ export class TokenService {
 
   private async transformToken(token: TokenDocument): Promise<Token> {
     // Generating new JWT token for this token's id
-    const jwtId = await this.jwtService.signAsync(token.id);
-
     return { 
-      id: jwtId,
+      id: token.id,
+      jwt: token.jwt,
       profileId: token.profileId,
       issued: token.issued,
       lastUsed: token.lastUsed,

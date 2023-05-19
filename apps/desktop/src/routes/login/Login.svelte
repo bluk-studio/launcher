@@ -15,6 +15,7 @@
   import RiFileCopy2Line from '~icons/ri/file-copy-2-line'
   import RiMailLine from '~icons/ri/mail-line'
   import RiArrowRightSLine from '~icons/ri/arrow-right-s-line';
+  import RiExternalLinkLine from '~icons/ri/external-link-line'
 
   // Importing other components
   import { Circle } from 'svelte-loading-spinners';
@@ -23,16 +24,10 @@
   let state: 'idle' | 'waiting' | 'authorizing' = 'idle';
   let isLoading = false;
 
-  let email: string;
   let authLink: string;
   
   // onMount function
   onMount(() => {
-    // If user is authorized - send him to default page
-    if ($ProfileStore.isAuthorized) {
-      navigate($ConfigStore.defaultPage);
-    };
-
     // Updating CurrentRoute Settings
     CurrentRouteStore.setPage({
       isApplicationRoute: false,
@@ -42,7 +37,7 @@
     });
   });
 
-  async function startAuthorization(type: AuthorizationType) {
+  async function startAuthorization() {
     isLoading = true;
 
     // Listening to application's "token_received" event
@@ -61,17 +56,11 @@
     });
 
     // Sending request to backend
-    authLink = await invoke('start_authorization', { authType: type, email });
+    authLink = await invoke('start_authorization');
     
     // Chaning current state
     state = 'waiting';
     isLoading = false;
-  };
-
-  enum AuthorizationType {
-    DISCORD = 'DISCORD',
-    GOOGLE = 'GOOGLE',
-    EMAIL = 'EMAIL'
   };
 </script>
 
@@ -96,50 +85,21 @@
       <div class="w-full px-4 my-3 flex-grow flex flex-col items-center justify-center">
         <!-- Description -->
         <h1 class="text-lg text-white">Авторизация</h1>
-        <p class="text-xs text-white text-opacity-80 text-center">Для продолжения вам нужно авторизоваться. Пожалуйста, выберите самый удобный способ.</p>
+        <p class="text-xs text-white text-opacity-80 text-center">Для продолжения вам нужно авторизоваться. Авторизация будет проходить в вашем браузере, так что можете приготовиться :)</p>
 
-        <!-- Login using mobile phone -->
-        <div class="mt-6 w-full mb-4">
-          <div class="w-full flex items-center justify-start bg-light-foreground border-solid rounded-lg px-3 py-1.5">
-            <RiMailLine class="w-4 h-4 text-white text-opacity-80 mr-2" />
-
-            <input bind:value={email} class="w-max bg-light-foreground text-sm" placeholder="Ваша почта" />
-          </div>
-
-          <!-- Login button -->
-          <button on:click={() => {
-            startAuthorization(AuthorizationType.EMAIL);
-          }} class="w-full px-3 py-1.5 mt-4 bg-light-foreground transition ease-it-out duration-200 hover:bg-background rounded-lg text-white text-opacity-60 flex items-center justify-center disabled:cursor-not-allowed" disabled={email == null}>
-            <!-- Loading screen -->
-            { #if isLoading }
-              <Circle color="#fff" size={20} />
-            { :else }
-              <p class="text-sm">Продолжить</p>
-  
-              <RiArrowRightSLine class="w-4 h-4 ml-0.5" />
-            { /if }
-          </button>
-        </div>
-
-        <!-- Divider -->
-        <div class="w-full">
-          <div class="w-full border-b-2 border-light-foreground"></div>
-        </div>
-
-        <h1 class="text-white text-xs text-opacity-60 my-2">Или авторизуйтесь с помощью...</h1>
-
-        <!-- Social login buttons -->
-        <div class="w-full flex flex-wrap justify-center">
-          { #each [{ type: AuthorizationType.DISCORD, text: "Discord", icon: RiDiscordFill }, { type: AuthorizationType.GOOGLE, text: "Google", icon: RiGoogleFill }] as method }
-            <button on:click={() => {
-              startAuthorization(method.type);
-            }} class="w-max mx-1.5 px-4 py-1.5 flex items-center rounded-full bg-light-foreground transition ease-it-out duration-200 hover:bg-background justify-center opacity-80">
-              <svelte:component this={method.icon} class="text-white w-4 h-4 mr-1.5" />
-              
-              <p class="text-white text-opacity-80 text-xs">{ method.text }</p>
-            </button>
-          { /each }
-        </div>
+        <!-- Authorize -->
+        <button on:click={() => {
+          startAuthorization();
+        }} class="w-full px-3 py-1.5 mt-4 bg-light-foreground transition ease-it-out duration-200 hover:bg-background rounded-lg text-white text-opacity-60 flex items-center justify-center disabled:cursor-not-allowed">
+          <!-- Loading screen -->
+          { #if isLoading }
+            <Circle color="#fff" size={16} />
+          { :else }
+            <p class="text-sm">Авторизоваться</p>
+    
+            <RiExternalLinkLine class="w-4 h-4 ml-1" />
+          { /if }
+        </button>
       </div>
 
       <!-- Footer -->
@@ -175,8 +135,6 @@
           <RiCloseFill class="w-4 h-4 ml-0.5" />
         </button>
       </div>
-    { :else }
-      <p>Authorizing...</p>
     { /if }
   </div>
 </main>

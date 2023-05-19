@@ -7,6 +7,9 @@ export type TokenDocument = Document & TokenModel;
 @Schema()
 export class TokenModel implements Omit<Token, "id"> {
   _id: string;
+
+  @Prop({ required: false })
+  jwt: string;
   
   @Prop({ required: true })
   profileId: string;

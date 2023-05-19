@@ -5,12 +5,11 @@ import { TextComponentDeclaration } from './Text';
 import { CounterComponentDeclaration } from './Counter';
 import { ContainerComponentDeclaration } from './Container';
 import { PostComponentDeclaration } from './Post';
-import { CivilizationComponentDeclaration } from './Civilization';
 import { ButtonComponentDeclaration } from './Button';
 import { PlayerTopComponentDeclaration } from './PlayerTop';
 
 const Components: Map<String, any> = new Map();
-[PlayerTopComponentDeclaration, ButtonComponentDeclaration, CivilizationComponentDeclaration, HeroComponentDeclaration, PlayButtonComponentDeclaration, TextComponentDeclaration, CounterComponentDeclaration, ContainerComponentDeclaration,PostComponentDeclaration].forEach(({ type, component }) => {
+[PlayerTopComponentDeclaration, ButtonComponentDeclaration, HeroComponentDeclaration, PlayButtonComponentDeclaration, TextComponentDeclaration, CounterComponentDeclaration, ContainerComponentDeclaration,PostComponentDeclaration].forEach(({ type, component }) => {
   Components.set(type, component);
 });
 
@@ -23,8 +22,7 @@ import type { ITextComponent } from './Text';
 import type { ICounterComponent } from './Counter';
 import type { IContainerComponent } from './Container';
 import type { IPostComponent } from './Post';
-import type { ICivilizationComponent } from './Civilization';
 import type { IButtonComponent } from './Button';
 import type { IPlayerTopComponent } from './PlayerTop';
 
-export type IComponent = IPlayerTopComponent | IHeroComponent | IPlayButtonComponent | ITextComponent | ICounterComponent | IContainerComponent | IPostComponent | ICivilizationComponent | IButtonComponent;
+export type IComponent = IPlayerTopComponent | IHeroComponent | IPlayButtonComponent | ITextComponent | ICounterComponent | IContainerComponent | IPostComponent | IButtonComponent;

@@ -9,10 +9,11 @@
   import RiGamepadLine from '~icons/ri/gamepad-line'
   import RiNewspaperLine from '~icons/ri/newspaper-line'
   import RiDiscordLine from '~icons/ri/discord-line'
-
+  import RiDownload2Line from '~icons/ri/download-2-line'
+  import RiSettings3Line from '~icons/ri/settings-3-line';
   import CodeFill from '~icons/ri/code-fill';
 
-  import RiSettings3Line from '~icons/ri/settings-3-line';
+
   import { navigate } from 'svelte-routing';
 
   // Pages themselves
@@ -31,6 +32,20 @@
       icon: RiDiscordLine,
       text: "Наш дискорд",
       link: '/socials/discord'
+    }
+  ]
+
+  // Bottom links
+  let bottomLinks = [
+    {
+      icon: RiDownload2Line,
+      text: "Загрузки",
+      link: '/downloads'
+    },
+    {
+      icon: RiSettings3Line,
+      text: "Настройки",
+      link: '/settings'
     }
   ]
 
@@ -95,17 +110,19 @@
 
   <!-- Profile -->
   <div class="w-full flex flex-col items-center">
-    <!-- Buttons -->
-    <button on:click={() => {
-      navigate("/settings");
-    }} class="group transition-all ease-in-out duration-200 { isOpened ? "w-full flex items-center" : "" } p-2 border-2 border-transparent hover:border-yellow-500 hover:border-opacity-50 hover:bg-black hover:bg-opacity-10 rounded-md">
-      <!-- <svelte:component this={page.icon} class="w-4 h-4 text-white text-opacity-60 group-hover:text-opacity-100" /> -->
-      <RiSettings3Line class="w-4 h-4 text-white text-opacity-60 group-hover:text-opacity-100" />
+    { #each bottomLinks as page }
+      { @const isCurrentPage = page.link == $CurrentRouteStore.pageLink }  
 
-      <!-- Text -->
-      { #if isOpened }
-        <p in:fade class="text-white opacity-80 group-hover:opacity-100 ml-2 text-sm font-light">Настройки</p>
-      { /if }
-    </button>
+      <button on:click={() => {
+        navigate(page.link);
+      }} class="group transition-all ease-in-out duration-200 { isOpened ? "w-full flex items-center" : "" } { isCurrentPage ? "bg-yellow-200 bg-opacity-20 hover:bg-opacity-30" : "hover:bg-black hover:bg-opacity-10" } mb-4 p-2 border-2 border-transparent hover:border-yellow-500 hover:border-opacity-50 rounded-md">
+        <svelte:component this={page.icon} class="w-4 h-4 text-white text-opacity-60 group-hover:text-opacity-100" />
+
+        <!-- Text -->
+        { #if isOpened }
+          <p in:fade class="text-white opacity-80 group-hover:opacity-100 ml-2 text-sm font-light">{ page.text }</p>
+        { /if }
+      </button>
+    { /each }
   </div>
 </sidebar>

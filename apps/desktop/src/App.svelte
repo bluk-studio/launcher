@@ -4,7 +4,7 @@
 
   // Router configuration
   import { Router, Route, navigate } from 'svelte-routing';
-  import { Explore, Login, Homepage, Game, News, Settings } from 'src/routes';
+  import { Explore, Login, Homepage, Game, News, Settings, Downloads, WelcomeSlides } from 'src/routes';
 
   // Component imports
   import { Sidebar, AppHeader } from 'src/components';
@@ -12,9 +12,11 @@
   
   // Importing other modules...
   import { onMount } from 'svelte';
-  import { ConfigStore, CurrentRouteStore, ProfileStore } from 'src/stores';
+  import { ConfigStore, CurrentRouteStore, ProfileStore, DownloadManagerStore, GamesLibraryStore, getStore } from 'src/stores';
+  import type { IDownloadsManagerStore } from 'src/stores';
   import { invoke } from '@tauri-apps/api';
   import { BaseDirectory, createDir, exists } from '@tauri-apps/api/fs';
+  import { appLocalDataDir, localDataDir, normalize } from '@tauri-apps/api/path';
 
   // Variables
   let loading = true;
@@ -28,13 +30,24 @@
   // OnMount hook to load application configuration
   onMount(async () => {
     // Showing this window
-    await invoke("show_window");
+    // await invoke("show_window");
 
     // We need to create appdata directory for our application.
-    checkAppDataDir();
+    await checkAppDataDir();
 
     // Getting application configuration from it's backend...
     await ConfigStore.fetchFromBackend();
+
+    // Fetching game informations from GameLibrary
+    await GamesLibraryStore.fetchFromStorage();
+
+    // Fetching downloads from storage
+    await DownloadManagerStore.fetchFromStorage();
+
+    if ((await getStore<IDownloadsManagerStore>(DownloadManagerStore)).length >= 0) {
+      // Starting all downloads
+      DownloadManagerStore.startAll();
+    };
 
     // Getting user information
     if (await ProfileStore.fetchFromStorage()) {
@@ -70,7 +83,7 @@
       </div>
     { :else }
       <div class="w-full flex-grow flex overflow-y-hidden">
-        <Router url="/login">
+        <Router url="/welcome">
           <!-- Sidebar -->
           { #if !$CurrentRouteStore.isSidebarHidden }
             <Sidebar />
@@ -81,9 +94,11 @@
             <!-- Routes -->
             <Route path="/homepage" component={Homepage} />
             <Route path="/explore" component={Explore} />
+            <Route path="/welcome" component={WelcomeSlides} />
             <Route path="/login" component={Login} />
             <Route path="/settings" component={Settings} />
             <Route path="/news" component={News} />
+            <Route path="/downloads" component={Downloads} />
             
             <!-- > Game-related routes -->
             <Route path="/store/game/:id" let:params>

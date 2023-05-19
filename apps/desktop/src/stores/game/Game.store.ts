@@ -1,6 +1,9 @@
 import { writable } from 'svelte/store';
 import { invoke } from '@tauri-apps/api';
 import type { IPage } from 'src/components';
+import { getStore } from '../StoreHelpers';
+import { ConfigStore, type IConfigStore } from '../config';
+import type { IGame } from '$types/entities/Game';
 
 // Store interface
 export type IGameStore = IUnloadedGame | ILoadedGame;
@@ -10,21 +13,7 @@ export interface IUnloadedGame {
 };
 
 // > Loaded game information
-export interface ILoadedGame {
-  isLoaded: true,
-
-  // Game-related info
-  id: String,
-  title: String,
-  image: String,
-
-  pages: {
-    store: IPage,
-    library: IPage,
-  },
-
-  sidebarLinks?: Array<{ title: String, href: String }>
-};
+export type ILoadedGame = IGame & { isLoaded: true };
 
 // Function, that'll initialize our store
 function _initialize() {
@@ -38,7 +27,27 @@ function _initialize() {
     subscribe,
 
     // Load game information
-    load(id: string,) {
+    async load(id: string): Promise<boolean> {
+      // Fetching config store
+      const config = await getStore<IConfigStore>(ConfigStore);
+
+      // Fetching game info from bluk launcher api
+      const response = await fetch(`${ config.launcherApiUrl }/game/${ id }`);
+      if (response.status != 200) return false;
+
+      // Updating our current store
+      const json = await response.json() as IGame;
+      update(() => {
+        return {
+          isLoaded: true,
+
+          ...json
+        } as ILoadedGame;
+      });
+
+      // Game has been loaded succesfully
+      return true;
+
       // Getting game info from Rust backend
       update(() => {
         return {

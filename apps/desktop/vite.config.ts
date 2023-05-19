@@ -15,6 +15,9 @@ export default defineConfig({
   clearScreen: false,
   server: {
     strictPort: true,
+    // fs: {
+    //   allow: ['../../node_modules', './']
+    // }
   },
   envPrefix: ['VITE_', 'TAURI_'],
   build: {
@@ -23,5 +26,4 @@ export default defineConfig({
     sourcemap: !!process.env.TAURI_DEBUG,
   },
   base: './',
-  
 });

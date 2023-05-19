@@ -1,17 +1,16 @@
 <script lang="ts">
     import RiExternalLinkLine from '~icons/ri/external-link-line'
-    import { CustomPageThemeStore } from 'src/stores';
 
     export let text: string;
     export let type: "simple" | "pictured" | "link" = "simple";
 </script>
 
 { #if type == "simple" }
-    <button style="background-color: { $CustomPageThemeStore.foreground }" class="w-full rounded-md px-6 py-2 flex justify-center items-center">
+    <button class="bg-foreground w-full rounded-md px-6 py-2 flex justify-center items-center">
         <p class="text-white font-medium text-sm">{ text }</p>
     </button>
 { :else if type == "link" }
-    <button style="background-color: { $CustomPageThemeStore.foreground }" class="w-full rounded-md px-6 py-2 flex justify-center items-center">
+    <button class="bg-foreground w-full rounded-md px-6 py-2 flex justify-center items-center">
         <p class="text-white font-medium text-sm">{ text }</p>
 
         <RiExternalLinkLine class="text-white w-4 ml-1.5" />

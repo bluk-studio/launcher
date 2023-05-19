@@ -1,3 +1,3 @@
-import { Token as IToken } from "$types/entities/Token";
+import { IToken as IToken } from "$types/entities/Token";
 
 export type Token = IToken;

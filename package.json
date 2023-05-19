@@ -2,7 +2,7 @@
   "name": "launcher",
   "version": "0.0.0",
   "license": "MIT",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
@@ -17,6 +17,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.2",
     "@ory/client": "^0.2.0-alpha.60",
+    "@xmcl/installer": "^4.4.0",
     "cookie-parser": "^1.4.6",
     "crypto-js": "^4.1.1",
     "express": "^4.18.2",

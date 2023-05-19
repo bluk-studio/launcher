@@ -14,16 +14,11 @@
         }
       }
     },
-    "test": {
-      "executor": "@nxrs/cargo:test",
-      "options": {}
-    },
-    "lint": {
-      "executor": "@nxrs/cargo:clippy",
+    "serve": {
+      "executor": "nx:run-commands",
       "options": {
-        "fix": false,
-        "failOnWarnings": true,
-        "noDeps": true
+        "command": "cargo tauri dev",
+        "cwd": "apps/desktop"
       }
     }
   },

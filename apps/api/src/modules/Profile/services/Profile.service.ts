@@ -20,9 +20,6 @@ export class ProfileService {
     const profile = await this.profileModel.findById(profileId);
     if (!profile) return null;
 
-    console.log("profile:", profile);
-    console.log("identity:", await this.getIdentityById(profile.identityId));
-
     return this.transformProfile(profile, await this.getIdentityById(profile.identityId));
   };
 
